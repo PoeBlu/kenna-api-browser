@@ -1,0 +1,88 @@
+<!-- Endpoint Dropdown -->
+<ul id="dropdown1" class="dropdown-content">
+  
+  <li><a href="/endpoints/vulnerabilities">Vulnerabilities</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/asset_groups">Asset Groups</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/asset_tagging">Asset Tagging</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/fixes">Fixes</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/connectors">Connectors</a></li>
+  <li class="divider"></li>
+
+  <li><a href="/endpoints/users">Users</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/roles">Roles</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/clients">Clients</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="/endpoints/data_exports">Data Exports</a></li>
+  
+</ul>
+
+<!-- About Dropdown -->
+<ul id="dropdown3" class="dropdown-content">
+  
+  <li><a href="about/introduction">Introduction</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="about/authentication">Authentication</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="about/parameters">Parameters</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="about/data_types">Data Types</a></li>
+  <li class="divider"></li>
+
+  <li><a href="about/errors">Errors</a></li>
+  <li class="divider"></li>
+  
+  <li><a href="about/status_codes">Status Codes</a></li>
+  
+</ul>
+
+<!-- User drop down -->
+<ul id="dropdown2" class="dropdown-content">
+  <li><%= link_to 'Edit Account', edit_user_registration_path %></li>
+  <li class="divider"></li>
+  <li><%= link_to 'Logout', destroy_user_session_path, method: :delete %></li>
+</ul>
+
+<nav class="nav" style="background-color:#34495e; margin-bottom:14px;" >
+    <div class="nav-wrapper" style="padding-right:30px;  background-color:#34495e;">
+    
+    <a href="/" class="brand-logo" style="padding-left:6em; padding-top:6px"><img width="146px" src="https://s3.amazonaws.com/mbrortest/kenna_white%402x.png"></a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down" style="vertical-align=bottom">
+    
+    <!-- Endpoints Dropdown Trigger -->
+    <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Test Endpoints<i class="material-icons right">arrow_drop_down</i></a></li>
+    
+    <!-- About Dropdown Trigger -->
+    <li><a class="dropdown-button" href="#!" data-activates="dropdown3">About the API<i class="material-icons right">arrow_drop_down</i></a></li>
+    
+    <!-- single links (non-drop -downs) -->
+    <li><a href = "/pages/wrappers">API Wrappers</a></li>
+    <li><a href = "/pages/using_tool">Using the API Browser</a></li>
+    <li><a href = "/pages/key">Enter API Token</a></li>
+    
+    <!-- User Dropdown Triggers -->
+    <% if user_signed_in?  %>
+      <li><a class="dropdown-button" href="#!" data-activates="dropdown2">
+          <i class="fa fa-cog fa-lg" style="vertical-align:middle">&nbsp;</i><%= current_user.email %><i class="material-icons right">arrow_drop_down</i></a></li>
+    <% else %>
+      <li><a href="/users/sign_in">Login or Signup</a></li>
+    <% end  %>
+      </ul>
+    </div>
+</div>
+</nav>

@@ -1,0 +1,74 @@
+
+    <!-- Logged in info panel -->
+    <% if user_signed_in?  %>
+      <div class="row" style="margin:0;">
+        <div class="col m6 offset-m3">
+          <div class="card" style="color:white; background-color:#34495e; padding-bottom=0px">
+            <div class="card-content white-text">
+              <span class="card-title">Welcome <%= current_user.email  %>!</span>
+              <p>This is a simple demonstration of interacting with the Kenna Security API. <a href="/pages/key">Click here</a> to enter your API Key in the setttings then see the <strong>Kenna API</strong> in action!.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="row" style="margin:0;">
+        <div class="col m6 offset-m3">
+          <div class="card" style="color:white; background-color:#34495e; padding-bottom=0px">
+            <div class="card-content white-text">
+              <span class="card-title">Kenna API Browser</span>
+              <p>This is a simple demonstration of interacting with the Kenna Security API. <a href="/users/sign_in">Login or Free Signup</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+     <!-- Divider -->
+    <div class="row" width="730px" style="margin:0; padding:0;">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-divider%402x.png"></div>
+    </div> 
+
+    <!-- Pre Login Summary -->
+    <div class="row">
+      <div class="col m6 offset-m3">
+        <div class="card white">
+          <div class="card-content black-text">
+            <!-- <span class="card-title" style="color:#3498db">The Kenna API</span> -->
+            <p>
+              <div id="doc-container">
+                <p class="lead">
+                  No connector available yet for one of your security tools?
+                  <strong>No problem.</strong> You can push vulnerabilities
+                  from any external system into Kenna using our simple,
+                  secure API. Enterprise integration has never been easier.
+                </p>
+                <p class="lead">
+                  The API is organized around <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">REST</a>
+                  to have predictable, resource-oriented URLs and to use HTTP
+                  response codes to indicate errors. We use HTTP verbs, which
+                  can be understood by off-the-shelf HTTP clients and libraries.
+                  The API utilizes <a href="http://www.json.org/">JSON</a>
+                  as the data exchange format.
+                </p>
+                <p class="lead">
+                  All API calls must be made over <code>HTTPS</code> and be accompanied by a valid
+                  <code>token</code> parameter. The root path of the API is
+                  <code>https://api.kennasecurity.com/</code>.
+                </p>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logo images -->
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-logos-all%402x-1.png"></div>
+    </div>   
+    <!-- Another image
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-prioritizeyourvulns-cves%402x.png"></div>
+    </div>
+    -->
