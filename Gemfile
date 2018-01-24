@@ -56,4 +56,4 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Kenna API Client
-gem 'kenna', '~> 0.1.0'
+gem 'kenna', '~> 0.1.1'

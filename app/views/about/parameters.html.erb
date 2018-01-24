@@ -1,2 +1,86 @@
-<h1>About#parameters</h1>
-<p>Find me in app/views/about/parameters.html.erb</p>
+
+
+      <div class="row" style="margin:0;">
+        <div class="col m6 offset-m3">
+          <div class="card" style="color:white; background-color:#34495e; margin-bottom:8px">
+            <div class="card-content white-text">
+              <span class="card-title"><p style="text-align:center">Kenna API - Parameters</p></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     <!-- Divider -->
+    <div class="row" width="730px" style="margin:0; padding:0;">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-divider%402x.png"></div>
+    </div> 
+
+
+    <div class="row" style="margin:0;">
+      <div class="col m6 offset-m3">
+        <div class="card white" style="margin-top:4px; margin-bottom:1px">
+          <div class="card-content black-text">
+              <p>Many API methods take optional parameters. For GET requests, parameters are specified as a segment in the path. For example if you were requesting data regarding a vulnerability with an id of 100:
+              </p>
+              <p><pre>
+                  curl -H "X-Risk-Token: <token>" "https://api.kennasecurity.com/vulnerabilities/100" -X GET
+                  </pre>
+              </p>
+              <p>
+                  For POST requests, parameters are encoded as JSON, with a Content-Type of 'application/json':
+              </p>
+              <p><pre>
+                  curl -H "X-Risk-Token: <token>" -H "Content-Type: application/json"
+  https://api.kennasecurity.com/vulnerabilities
+  -X POST
+  -d '{
+        "vulnerability":
+          {
+            "wasc_id" : "WASC-01",
+            "primary_locator" : "url",
+            "url" : "http://www.example.com"
+          }
+      }'
+      </pre>
+              </p>
+              <p>
+                  Larger record sets are paginated by 500. For example, when requesting your list of vulnerabilities. To page through the record set, you pass a page parameter. Each paginated response includes meta data containing the current page and the total number of pages. Page limit is currently set to 20. Pages are 1-indexed based.
+              </p>
+              <p>
+                  <pre>
+                      curl -H "X-Risk-Token: <token>" "https://api.kennasecurity.com/vulnerabilities/?page=3" -X GET
+                  </pre>
+              </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<BR>
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-logos-all%402x-1.png"></div>
+    </div>   
+
+     <!-- Divider -->
+    <div class="row" width="730px" style="margin:0; padding:0;">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-divider%402x.png"></div>
+    </div> 
+
+
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-prioritizeyourvulns-cves%402x.png"></div>
+    </div>
+
+    <!-- Images 
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-logos-all%402x-1.png"></div>
+    </div>   
+    
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-prioritizeyourvulns-cves%402x.png"></div>
+    </div>
+    
+    <div class="row" width="730px">
+        <div class="col m6 offset-m3"><img src="https://s3.amazonaws.com/mbrortest/tu-video.jpg"></div>
+    </div>
+    -->
