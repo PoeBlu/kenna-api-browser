@@ -2,19 +2,19 @@
   $(document).ready( function () {
     $("#method_elem").change(function(){
         if (this.value === 'POST') {
-          $("#user_id_elem").hide();
+          $("#id_elem").hide();
           $("#post_body_elem").show();
         } 
         else if (this.value === 'PUT') {
-          $("#user_id_elem").show();
+          $("#id_elem").show();
           $("#put_body_elem").show();
         }
         else if (this.value === 'GET' || this.value === 'DELETE') {
-          $("#user_id_elem").show();
+          $("#id_elem").show();
           $("#body_elem").hide();
         }
         else {
-          $("#user_id_elem").show();
+          $("#id_elem").show();
           $("#body_elem").hide();
         }
     });
@@ -53,30 +53,53 @@
 </script>
 
 <% else %>
+
+<%
+@post_body = '{
+      "user":
+        {
+          "firstname":"Demo",
+          "lastname":"John",
+          "email":"demo@test.com",
+          "role":"normal user"
+        }
+    }'
+
+@put_body = '{
+      "user":
+        {
+          "firstname" : "Kermit"
+        }
+    }'
+%>
+
+<% @endpoint = '/users' %>
+
 <%
 @method = request.params['method']
 if !@method
   @method = 'GET'
 end
 
-@endpoint = '/users'
-if request.params['endpoint'] != '/users'
-  # redirect the page accordingly
-end
-
-@user_id = ''
-if request.params['user_id']
-  @user_id = request.params['user_id']
+@id = ''
+if request.params['id']
+  @id = request.params['id']
   # redirect the page to single display
 end
 
-@url = 'http://api.kennasecurity.com' + @endpoint + @user_id
+@url = 'http://api.kennasecurity.com' + @endpoint + @id
 
 require 'kenna'
 require 'json'
 
 @api = Kenna::Api.new(current_user.token);
-@data = @api.getAllUsers();
+
+if @id == nil || @id == ''
+    @data = @api.getAllUsers()
+else
+  @data = [];
+  @data.push(@api.getUserById(@id))
+end
 %>
 
 
@@ -106,16 +129,18 @@ require 'json'
       <!-- Endpoint Select -->
       <%= render 'layouts/endpointsel' %>
       
-      <div id="user_id_elem" class="col s4">
+      <!-- ID Select -->
+      <div id="id_elem" class="col s2">
         <label>User ID</label>
-        <select class="browser-default" name="user_id">
-          <% if @user_id == '' %>
-            <option value="" disabled selected>(No ID = All Users)</option>
+        <select class="browser-default" name="id">
+          <% if @id == '' %>
+            <option value="" selected>(No Id = All)</option>
           <% else %>
-            <option value="<%= @user_id %>" selected><%= @user_id %></option>
+            <option value="<%= @id %>" selected><%= @id %></option>
+            <option value="">(No Id = All)</option>
           <% end %>
           <%  @data.each do |user| %>
-            <option value="/<%= user['id'] %>">/<%= user['id'] %> (<%= user['firstname'] %> <%= user['lastname'] %>)</option>
+            <option value="/<%= user['id'] %>">/<%= user['id'] %> (<%= user['firstname'][0] %>. <%= user['lastname'] %>)</option>
           <% end %>
         </select>  
       </div>
@@ -140,17 +165,15 @@ require 'json'
           <i class="material-icons right">send</i>
         </button>
       </div>
-
-
     </div>
     </form>
 </div>
 
-<div class="container">
+<!-- View data in table or JSON -->
+<div id="view_t_or_j" class="container">
       <div class="row" style="margin:0;">
-
         <div class="card white">
-          
+
           <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
             <p style="font-size:16px; text-align:left;">
               <button style="color:black; background-color:white" class="waves-effect waves-teal btn-flat" id="show_table">Table View</button> <button style="color:black; background-color:grey" class="waves-effect waves-teal btn-flat" id="show_json">JSON View</button>&nbsp;&nbsp;<%= @method %> > <%= @url %></p>
@@ -162,6 +185,9 @@ require 'json'
             <table id="table_id" class="display" style="padding-top:0; margin-top:o">
               <thead>
                 <tr>
+                  <%#  @data[0].keys.each do |k| %>
+                  <%#= k %>
+                  <%# end %>
                   <th>ID</th>
                   <th>First Name</th>
                   <th>Last Name</th>
@@ -175,7 +201,7 @@ require 'json'
               <tbody>
                 <%  @data.each do |d| %>
                   <tr>
-                      <td><a href="/"><%= d['id'] %></a></td>
+                      <td><a href="/endpoints/users?id=<%= d['id'] %>"><%= d['id'] %></a></td>
                       <td><%= d['firstname'] %></td>
                       <td><%= d['lastname'] %></td>
                       <td><%= d['email'] %></td>
@@ -191,12 +217,74 @@ require 'json'
           </div>
             
             <div id="json">
-              <pre><%= JSON.pretty_generate @data %></pre>
+              <pre>
+                <%= JSON.pretty_generate @data %>
+                
+                <!-- this is if I want to iterate unknown data -->
+                <%#  @data.each do |dd| %>
+                  <%#  dd.keys.each do |kk| %>
+                    <%#= kk %><%#= dd[kk] %>
+                  <%# end %>
+                <%# end %>
+              </pre>
+              
             </div>
 
           </div>
         </div>
      </div>
     </div>
+
+
+<!-- View Single Entry -->
+<% 
+if @id != nil && @id != ''  
+  #@data = @data[0]
+%>
+<div id="view_single" class="container" style="margin-top:0;">
+      <div class="row" style="margin:0;">
+        <div class="card white">
+          
+          <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
+            <p style="font-size:16px; text-align:center;">
+            Full Record for:&nbsp;&nbsp;<strong><%= @url %></strong> 
+            </p>
+          </div>
+          
+          <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
+            
+            <div id="table">              
+            <table id="table_id" class="display" style="padding-top:0; margin-top:0;">
+              <thead>
+                <tr>
+                  <th style="width:175px"><strong>Key</strong></th>
+                  <th><strong>Value</strong></th>
+                </tr>
+              </thead>
+
+              <tbody>
+              
+                <%  @data.each do |dd| %>
+                  
+                  <%  dd.keys.each do |kk| %>
+                  <tr>
+                    <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><strong><%= kk %></strong></td>
+                    <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><%= dd[kk] %></td>
+                  </tr>
+                  <% end %>
+                <% end %>
+              
+              </tbody>
+              
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<% end %>
+
+
   <% end  %>
 <% end  %>

@@ -1,0 +1,55 @@
+<script>
+  $(document).ready( function () {
+    $("#method_elem").change(function(){
+        if (this.value === 'POST') {
+          $("#id_elem").hide();
+          $("#post_body_elem").show();
+        } 
+        else if (this.value === 'PUT') {
+          $("#id_elem").show();
+          $("#put_body_elem").show();
+        }
+        else if (this.value === 'GET' || this.value === 'DELETE') {
+          $("#id_elem").show();
+          $("#body_elem").hide();
+        }
+        else {
+          $("#id_elem").show();
+          $("#body_elem").hide();
+        }
+    });
+    
+    $("#json").hide();
+    $("#table").show();
+        
+    $("#show_table").click(function(){
+        $("#json").hide();
+        $("#show_json").css({'color':'white', 'background-color':'grey'});
+        $("#table").show();
+        $("#show_table").css({'color':'black', 'background-color':'white'});
+        
+    });
+    $("#show_json").click(function(){
+        $("#json").show();
+        $("#show_json").css({'color':'black', 'background-color':'white'});
+        $("#table").hide();
+        $("#show_table").css({'color':'white', 'background-color':'grey'});
+    });
+    
+    $('#table_id').DataTable();
+} );
+</script>
+
+<% if !user_signed_in? %>
+<script type="text/javascript">
+  alert('You need to be logged in to see this page.');
+  window.location.href="/users/sign_in";
+</script>
+
+<% elsif !current_user.token? %>
+<script type="text/javascript">
+  alert('You need to upload a valid Kenna API Token to see this page.');
+  window.location.href="/pages/key";
+</script>
+
+<% else %>
