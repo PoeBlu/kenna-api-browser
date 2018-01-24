@@ -1,0 +1,16 @@
+<div class="col s2">
+<label>Endpoint</label>
+<select onchange="window.location.href=(this.value);" class="browser-default" id="endpoint_elem" name="endpoint">
+    <option value="<%= @endpoint %>" selected><%= @endpoint %></option>
+    <option value="/endpoints/vulnerabilities">/vulnerabilities</option>
+    <option value="/endpoints/assets">/assets</option>
+    <option value="/endpoints/asset_groups">/asset_groups</option>
+    <option value="/endpoints/asset_tagging">/asset_tagging</option>
+    <option value="/endpoints/fixes">/fixes</option>
+    <option value="/endpoints/connectors">/connectors</option>
+    <option value="/endpoints/users">/users</option>
+    <option value="/endpoints/roles">/roles</option>
+    <option value="/endpoints/clients">/clients</option>
+    <option value="/endpoints/data_exports">/data_exports</option>
+</select>        
+</div>

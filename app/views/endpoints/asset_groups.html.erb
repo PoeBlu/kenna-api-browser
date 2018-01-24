@@ -1,2 +1,190 @@
-<h1>Endpoints#asset_groups</h1>
-<p>Find me in app/views/endpoints/asset_groups.html.erb</p>
+<% if !user_signed_in? %>
+<script type="text/javascript">
+  alert('You need to be logged in to see this page.');
+  window.location.href="/users/sign_in";
+</script>
+
+<% elsif !current_user.token? %>
+<script type="text/javascript">
+  alert('You need to upload a valid Kenna API Token to see this page.');
+  window.location.href="/pages/key";
+</script>
+
+<% else %>
+<%
+@method = request.params['method']
+if !@method
+  @method = 'GET'
+end
+
+@endpoint = '/asset_groups'
+if request.params['endpoint'] != '/asset_groups'
+  # redirect the page accordingly
+end
+
+@user_id = ''
+if request.params['user_id']
+  @user_id = request.params['user_id']
+  # redirect the page to single display
+end
+
+@url = 'http://api.kennasecurity.com' + @endpoint + @user_id
+
+require 'kenna'
+require 'json'
+
+@api = Kenna::Api.new(current_user.token);
+@data = @api.getAllUsers();
+%>
+
+
+<% if !@data %>
+<script type="text/javascript">
+  alert('Token appears to be invalid.');
+  window.location.href="/pages/key";
+</script>
+<% else %>
+
+<div class="container">
+    <form action="/endpoints/users" method="GET">
+    <div class="row">
+      <div class="col s1">
+        <label>Method</label>
+        <select id="method_elem" class="browser-default" name="method">
+            <option value="<%= @method %>" selected><%= @method %></option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>  
+      </div>
+      
+      <!-- Endpoint Select -->
+      <%= render 'layouts/endpointsel' %>
+      
+      <div id="user_id_elem" class="col s4">
+        <label>User ID</label>
+        <select class="browser-default" name="user_id">
+          <% if @user_id == '' %>
+            <option value="" disabled selected>(No ID = All <%= @endpoint %>)</option>
+          <% else %>
+            <option value="<%= @user_id %>" selected><%= @user_id %></option>
+          <% end %>
+          <%  @data.each do |user| %>
+            <option value="/<%= user['id'] %>">/<%= user['id'] %> (<%= user['firstname'] %> <%= user['lastname'] %>)</option>
+          <% end %>
+        </select>  
+      </div>
+      
+      <div id="post_body_elem" style="display:none;" class="col s4">
+        <label for="post_body">Post Body Json</label>
+        <div class="col s12">
+          <textarea name="post_body" cols="4" class="browser-default"><%= @post_body %></textarea>
+        </div>
+      </div>
+
+      <div id="put_body_elem" style="display:none;" class="col s4">
+        <label for="put_body">Put Body Json</label>
+        <div class="col s12">
+          <textarea name="put_body" cols="4" class="browser-default"><%= @data %></textarea>
+        </div>
+      </div>
+      
+      <div class="col s2">
+        <label>Send call to API</label>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Send
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
+
+
+    </div>
+    </form>
+</div>
+
+
+
+<script>
+  $(document).ready( function () {
+    $("#method_elem").change(function(){
+        if (this.value === 'POST') {
+          $("#user_id_elem").hide();
+          $("#post_body_elem").show();
+        } 
+        else if (this.value === 'PUT') {
+          $("#user_id_elem").show();
+          $("#put_body_elem").show();
+        }
+        else if (this.value === 'GET' || this.value === 'DELETE') {
+          $("#user_id_elem").show();
+          $("#body_elem").hide();
+        }
+        else {
+          $("#user_id_elem").show();
+          $("#body_elem").hide();
+        }
+        
+        
+    });
+    
+    $("#json").hide();
+    $("#table").show();
+        
+    $("#show_table").click(function(){
+        $("#json").hide();
+        $("#show_json").css({'color':'white', 'background-color':'grey'});
+        $("#table").show();
+        $("#show_table").css({'color':'black', 'background-color':'white'});
+        
+    });
+    $("#show_json").click(function(){
+        $("#json").show();
+        $("#show_json").css({'color':'black', 'background-color':'white'});
+        $("#table").hide();
+        $("#show_table").css({'color':'white', 'background-color':'grey'});
+    });
+    
+    $('#table_id').DataTable();
+} );
+</script>
+
+<div class="container">
+      <div class="row" style="margin:0;">
+
+        <div class="card white">
+          
+          <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
+            <p style="font-size:16px; text-align:left;">
+              <button style="color:black; background-color:white" class="waves-effect waves-teal btn-flat" id="show_table">Table View</button> <button style="color:black; background-color:grey" class="waves-effect waves-teal btn-flat" id="show_json">JSON View</button>&nbsp;&nbsp;<%= @method %> > <%= @url %></p>
+          </div>
+
+          <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
+            
+            <div id="table">              
+            <table id="table_id" class="display" style="padding-top:0; margin-top:o">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%  @data.each do |d| %>
+                  <tr>
+                      <td><a href="/"><%= d['id'] %></a></td>
+                  </tr>
+                  </a>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+            
+            <div id="json">
+              <pre><%= JSON.pretty_generate @data %></pre>
+            </div>
+
+          </div>
+        </div>
+     </div>
+    </div>
+  <% end  %>
+<% end  %>

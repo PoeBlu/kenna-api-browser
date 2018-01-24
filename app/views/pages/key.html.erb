@@ -7,11 +7,11 @@
 
       <div class="row" style="margin:0;">
         <div class="col m6 offset-m3">
-          <div class="card" style="color:white; background-color:#34495e; padding-bottom=0px">
+          <div class="card" style="color:white; background-color:#34495e; margin-bottom:8px">
             <div class="card-content white-text">
               <span class="card-title">Upload your API Token</span>
               <p>You can find they Token to your API under your username at the top right of the page when you logged in to your account. 
-              Simply click "Aplication" and you will see your Token. If you don't have an account, you can sign up for a free trial <a href="http://www.kennasecurities.com">right here,</a> or use this demo API Token: 	ty9hxcpmgdrvnuqe</p>
+              Simply click "Aplication" and you will see your Token. If you don't have an account, you can sign up for a free trial <a target="_blank" href="https://app.kennasecurity.com/signup">right here,</a> or use this demo API Token: 	ty9hxcpmgdrvnuqe</p>
             </div>
           </div>
         </div>
@@ -22,50 +22,32 @@
         <div class="col m6 offset-m3"><img width="100%" src="https://s3.amazonaws.com/mbrortest/home-divider%402x.png"></div>
     </div> 
 
-
-
-
-
-<% #current_user.token = 'ty9hxcpmgdrvnuqe' %>
-    
-    
-    <!-- Submit Token -->
-    <div class="row">
+    <!-- Submit Token Form -->
+    <div class="row" style="margin:0;">
       <div class="col m6 offset-m3">
-        <div class="card white">
+        <div class="card white" style="margin-top:4px; margin-bottom:1px">
           <div class="card-content black-text">
-
-<% 
-if params[:field_token] 
-  current_user.token = params[:field_token]
-  if current_user.save
-%>
-<div style = "color:green;">Your API Token has been uploaded.</div>
-<% else %>
-<div style = "color:red;">The Token does not appear to be valid.</div>
-<%
-   end  
-end 
-%>
-
-            <%= form_tag '/pages/key', :method => "get" %>
-              
-              <div class="form-group">
-                <label for="field_token">API Token</label>
-                <input type="text" name="field_token" id="field_token" width="150px" value="<%= current_user.token %>" placeholder="Token" required>
-              </div>
-              
-              <button class="btn waves-effect waves-light" type="submit" name="action">Upload API Token
-                <i class="material-icons right">send</i>
-              </button>
-          
-              </form>
-
-
-
-            
-
-
+          <% 
+          if params[:field_token] 
+            current_user.token = params[:field_token]
+            if current_user.save
+          %>
+          <div style = "color:green;">Your API Token has been uploaded.</div>
+          <% else %>
+          <div style = "color:red;">The Token does not appear to be valid.</div>
+          <%
+             end  
+          end 
+          %>
+          <%= form_tag '/pages/key', :method => "get" %>
+            <div class="form-group">
+              <label for="field_token">API Token</label>
+              <input type="text" name="field_token" id="field_token" width="150px" value="<%= current_user.token %>" placeholder="Token" required>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Upload API Token
+              <i class="material-icons right">send</i>
+            </button>
+            </form>
           </div>
         </div>
       </div>

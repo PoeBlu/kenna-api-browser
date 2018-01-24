@@ -1,48 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kenna API Browser</title>
-    <%= csrf_meta_tags %>
-    
-    
-
-    <!-- Google jQuery CDN -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-    <!-- Materialize Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    
-    <!-- Google Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-
-    <!-- DataTables(datatables.net) -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
-
-    <!-- Font Awesome -->
-    <script src="https://use.fontawesome.com/18c85ece21.js"></script>
-    
-    <!--TurboLinks -->
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  
-    <style>
-      .navLink {
-        color: black;
-      }
-      .dropDownLink {
-        color:#379ed7;
-      }
-      .footerLink {
-          color: white;
-          text-align:center;
-          margin:0;
-      }
-    </style>
+    <%= render 'layouts/head' %>
   </head>
-  <body style="background: url('https://s3.amazonaws.com/mbrortest/bg.jpg') no-repeat scroll 100%; font-family: 'GothamBookRegular', sans-serif; backgroung-image:">
-      
+  <body style="background: url('https://s3.amazonaws.com/mbrortest/bg.jpg') no-repeat scroll 100%; background-position: top;">
+
     <!-- Navbar -->
     <%= render 'layouts/navbar' %>
 

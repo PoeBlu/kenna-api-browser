@@ -1,9 +1,12 @@
 
 <% if notice %>
     <div class="row">
-        <div class="col m6 offset-m3">
-            <p class="notice"><%= notice %></p>
-            <p class="alert"><%= alert %></p>
-        </div>
+        <p style="font-size:14px; color:green; align:center" class="notice"><%= notice %></p>
+    </div>
+<% end %>
+
+<% if alert %>
+    <div class="row">
+        <p style="font-size:14px; color:red; align:center;" class="alert"><%= alert %></p>
     </div>
 <% end %>
