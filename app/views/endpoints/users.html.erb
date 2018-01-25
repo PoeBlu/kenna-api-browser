@@ -4,18 +4,22 @@
         if (this.value === 'POST') {
           $("#id_elem").hide();
           $("#post_body_elem").show();
+          $("#put_body_elem").hide();
         } 
         else if (this.value === 'PUT') {
           $("#id_elem").show();
           $("#put_body_elem").show();
+          $("#post_body_elem").hide();
         }
         else if (this.value === 'GET' || this.value === 'DELETE') {
           $("#id_elem").show();
-          $("#body_elem").hide();
+          $("#post_body_elem").hide();
+          $("#put_body_elem").hide();
         }
         else {
           $("#id_elem").show();
-          $("#body_elem").hide();
+          $("#post_body_elem").hide();
+          $("#put_body_elem").hide();
         }
     });
     
