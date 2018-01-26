@@ -1,6 +1,8 @@
 <title>Kenna API Browser</title>
 <%= csrf_meta_tags %>
 
+<!-- TODO (Maynard): Loading needs to be optimized, some neeeds to go to the bottom, resolve conflicts -->
+
 <!-- Google jQuery CDN -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <!-- Materialize Compiled and minified JavaScript -->
@@ -18,8 +20,21 @@
 <!-- Font Awesome -->
 <script src="https://use.fontawesome.com/18c85ece21.js"></script>
 
+<!-- Modal Script -->
+<!-- TODO  (Maynard): This should not be here -->
+<script>
+(function ($) {
+    $(function () {
+          //initialize all modals           
+          $('.modal').modal();
+          //open by click on trigger
+          $('.trigger-modal').modal();
 
+          });
+      })(jQuery);
+</script>
 
+<!-- TODO (Maynard): This should not be here -->
 <style>
   .navLink {
     color: black;

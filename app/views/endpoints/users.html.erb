@@ -75,7 +75,7 @@
     @post_body = {"user":{ "firstname": Faker::Name.first_name, "lastname": Faker::Name.last_name, "email": Faker::Internet.email, "phone": Faker::PhoneNumber.cell_phone, "role":"normal user" }}
     @post_body = @post_body.to_json
     
-    @put_body = {"user":{"firstname":"Adam"}}
+    @put_body = {"user":{"firstname": Faker::Name.first_name }}
     @put_body = @put_body.to_json
     
     @method = request.params['method']
@@ -97,6 +97,7 @@
     # Build request & hit the endpoint
     case @method
     
+    ################################# GET #################################
     when 'GET'
       if @id == nil || @id == ''
         @data = @api.getAllUsers()
@@ -105,43 +106,197 @@
         #@data = JSON.parse(@data.body)['users']
       end
       
+      ################################# POST #################################
     when 'POST'
       @post_body = request.params['post_body']
-      puts "**************************************************************************************************************"
-      puts @post_body
-      puts "**************************************************************************************************************"
-      @new_user = @api.post(@endpoint, @post_body)
-      @new_user = JSON.parse(@new_user)      
-      if !@new_user['body']
-        # Handle error!
-        alert = @new_user['message']
+      begin
+        @post_body = JSON.parse(@post_body)
+      rescue
+        @modal_title = 'POST Failed - Invalid body.'
+        @modal_body = 'Invalid body'
+        %>
+        <script>
+        alert(<%=@modal_body%>)
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_warning').modal('open');
+          });
+        </script>
+        <%
+      end
+      @api_response = @api.post(@endpoint, @post_body)
+      
+      puts '((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((('
+        puts @endpoint
+        puts @post_body
+        puts @api_response
+      puts '))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))'
+      
+      
+      if @api_response['message']
+        @modal_title = 'POST Failed'
+        @modal_body = 'Invalid body or duplicate email'
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_danger').modal('open');
+          });
+        </script>
+        <%
+        
       else
-        @id = @new_user['body']['user']['id']
-        @url += @url + '/' + @id
-        @METHOD = 'POST'
-        @data.push(@api.getUserById(@id))
-      end      
+        @api_response = JSON.parse(@api_response)
+        @id = @api_response['user']['id']
+        @url = @url + '/' + @id.to_s
+        
+        @get_api_response = @api.get('/'+ @resource +'/'+ @id.to_s)
+        @get_api_response = JSON.parse(@get_api_response)
+        @resource_singular = @resource[0, @resource.length-1]
+        @get_api_response = @get_api_response[@resource_singular]
+        
+        
+        if @resource == 'users'
+          @post_body = {"user":{ "firstname": Faker::Name.first_name, "lastname": Faker::Name.last_name, "email": Faker::Internet.email, "phone": Faker::PhoneNumber.cell_phone, "role":"normal user" }}
+          @post_body = @post_body.to_json
+        
+        elsif @resource == 'assets'
+          #@post_body = {"assets":{ "email": Faker::Internet.email, "phone": Faker::PhoneNumber.cell_phone }}
+          #@post_body = @post_body.to_json
+        end
+        
+    
+        @modal_title = @method +' Successful'
+        @method = 'GET'
+        @modal_body = @get_api_response
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_success').modal('open');
+          });
+        </script>
+        <%
+        @data.push(@get_api_response)
+      end
+      
+      ################################# PUT #################################
+    when 'PUT'
+      @put_body = request.params['put_body']
+      
+      begin
+        @put_body = JSON.parse(@put_body)
+      rescue
+        @modal_title = 'PUT Failed - Invalid body.'
+        @modal_body = 'Invalid body'
+        %>
+        <script>
+        alert(<%=@modal_body%>)
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_warning').modal('open');
+          });
+        </script>
+        <%
+      end
+      
+      @id = request.params['id']
+      @id = @id[1, @id.length] if @id[0,1] == '/'
+      @api_response = @api.put(@endpoint +'/'+ @id, @put_body)
+      
+      if @api_response.class != RestClient::Response
+        @modal_title = 'PUT Failed'
+        @modal_body = @api_response
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_danger').modal('open');
+          });
+        </script>
+        <%
+        
+      else
+        @url = @url + '/' + @id.to_s
+        
+        if @resource == 'users'
+          @put_body = {"user":{ "firstname": Faker::Name.first_name }}
+          @put_body = @put_body.to_json
+        
+        elsif @resource == 'assets'
+          #@put_body = {"assets":{ "ap_address": Faker::Internet.ipaddress }}
+          #@put_body = @put_body.to_json
+        end
+    
+        @get_api_response = $api.get(@endpoint +'/'+ @id.to_s)
+        @get_api_response = JSON.parse(@get_api_response)
+        @modal_title = @method +' Successful'
+        @method = 'GET'
+        @modal_body = @get_api_response
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_success').modal('open');
+          });
+        </script>
+        <%
+        @data.push(@get_api_response[@resource[0,@resource.length-1]])
+      end
       
       
+      ################################# DELETE #################################
+    when 'DELETE'
       
-
-
-
+      @id = request.params['id']
+      @id = @id[1, @id.length] if @id[0,1] == '/'
+      @api_response = @api.delete(@endpoint +'/'+ @id)
+      
+      if @api_response.code != 204
+        @modal_title = 'DELETE Failed'
+        @modal_body = @api_response
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_danger').modal('open');
+          });
+        </script>
+        <%
+        
+      else
+        @url = @url + '/' + @id.to_s
+        
+        @get_api_response = $api.get(@endpoint)
+        @get_api_response = JSON.parse(@get_api_response)
+        
+        puts '(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((('
+        puts  @get_api_response[@resource]
+        puts '(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((('
+        
+        @modal_title = @method +' Successful'
+        @method = 'GET'
+        @modal_body = 'The record with ID number: ' + @id + ' was deleted.'
+        %>
+        <script>
+          // modal_kenna, modal_success, modal_danger, modal_warning
+          $(function () {
+            $('#modal_success').modal('open');
+          });
+        </script>
+        <%
+        @id = nil
+        @data = @get_api_response[@resource]
+      end
+      
+      
     else # if someone decides try to send some other value for method
       @method = 'GET'
     end
     
     %>
     
-    <!- bounce, TODO: Refactor for what reason? use modal? Put in message where data goes? -->
-    <% if !@data %>
-        <script type="text/javascript">
-          alert('Token appears to be invalid.');
-          window.location.href="/pages/key";
-        </script>
-    <% else %>
 
-  
 
     <!-- Begina Route Builder Form -->
     <div class="container">
@@ -165,7 +320,7 @@
           <!-- ID Select -->
           <div id="id_elem" class="col s2">
             <label>User ID</label>
-            <select class="browser-default" name="id">
+            <select class="browser-default" id="id" name="id">
               <% if @id == '' || @id == nil %>
                 <option value="" selected>(No Id = All)</option>
               <% else %>
@@ -315,8 +470,6 @@
           </div>
         </div>
     </div>
-    <% end %>
-    
     
   <% end  %>
 <% end  %>

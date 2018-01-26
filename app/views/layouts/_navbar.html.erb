@@ -1,6 +1,9 @@
 <!-- Endpoint Dropdown -->
 <ul id="dropdown1" class="dropdown-content">
   
+  <li><a href="/endpoints/assets">Assets</a></li>
+  <li class="divider"></li>
+  
   <li><a href="/endpoints/vulnerabilities">Vulnerabilities</a></li>
   <li class="divider"></li>
   
@@ -88,3 +91,66 @@
     </div>
 </div>
 </nav>
+
+
+
+<!-- Modals -->
+  <div id="modal_kennna" class="modal" style="background-color:#34495e;">
+    
+    <div class="modal-header" style="margin-top:0; padding:6; background-color:#34495e;color:white">
+      <h5 style="text-align: center;"><strong><%= @modal_title %></strong></h5>
+    </div>
+    
+    <div class="modal-content" style="background-color:white;">
+      <p><%= @modal_body %></p>
+    </div>
+    
+    <div class="modal-footer" style="background-color:#e0e4e7;">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+    </div>
+  </div>
+  
+  <div id="modal_success" class="modal" style="background-color:teal;">
+    
+    <div class="modal-header" style="margin-top:0; padding:6; background-color:teal;color:white">
+      <h5 style="text-align: center;"><strong><%= @modal_title %></strong></h5>
+    </div>
+    
+    <div class="modal-content" style="background-color:white;">
+      <p><%= @modal_body %></p>
+    </div>
+    
+    <div class="modal-footer" style="background-color:#e0e4e7;">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+    </div>
+  </div>
+  
+  <div id="modal_warning" class="modal" style="background-color:orange;">
+    
+    <div class="modal-header" style="margin-top:0; padding:6; background-color:orange;color:white">
+      <h5 style="text-align: center;"><strong><%= @modal_title %></strong></h5>
+    </div>
+    
+    <div class="modal-content" style="background-color:white;">
+      <p><%= @modal_body %></p>
+    </div>
+    
+    <div class="modal-footer" style="background-color:#e0e4e7;">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+    </div>
+  </div>
+  
+  <div id="modal_danger" class="modal" style="background-color:red">
+    
+    <div class="modal-header" style="margin-top:0; padding:6; background-color:red;color:white">
+      <h5 style="text-align: center;"><strong><%= @modal_title %></strong></h5>
+    </div>
+    
+    <div class="modal-content" style="background-color:white;">
+      <p><%= @modal_body %></p>
+    </div>
+    
+    <div class="modal-footer" style="background-color:#e0e4e7;">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+    </div>
+  </div>

@@ -22,7 +22,18 @@ Rails.application.routes.draw do
   get 'pages/key'
   
   post 'pages/key'
+  
+  post 'endpoints/vulnerabilities'
+  post 'endpoints/assets'
+  post 'endpoints/asset_groups'
+  post 'endpoints/asset_tagging'
+  post 'endpoints/fixes'
+  post 'endpoints/connectors'
   post 'endpoints/users'
+  post 'endpoints/roles'
+  post 'endpoints/clients'
+  post 'endpoints/data_exports'
+  
   
   devise_for :users
   get 'welcome/index'
