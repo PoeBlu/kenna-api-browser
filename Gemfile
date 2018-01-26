@@ -56,6 +56,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Kenna API Client
-gem 'kenna', '~> 0.1.1'
-gem 'rest-client', '~> 2.0', '>= 2.0.2'
-gem 'faker', '~> 1.8', '>= 1.8.7'
+#gem 'kenna', '~> 0.1.1'
+#gem 'rest-client', '~> 2.0', '>= 2.0.2'
+#gem 'faker', '~> 1.8', '>= 1.8.7'
+#gem 'kenna', :git => 'https://github.com/maynard/kenna.git'

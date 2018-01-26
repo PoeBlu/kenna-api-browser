@@ -44,251 +44,279 @@
 } );
 </script>
 
+
+<!-- Bouncers -->
 <% if !user_signed_in? %>
-<script type="text/javascript">
-  alert('You need to be logged in to see this page.');
-  window.location.href="/users/sign_in";
-</script>
+    <script type="text/javascript">
+      alert('You need to be logged in to see this page.');
+      window.location.href="/users/sign_in";
+    </script>
 
 <% elsif !current_user.token? %>
-<script type="text/javascript">
-  alert('You need to upload a valid Kenna API Token to see this page.');
-  window.location.href="/pages/key";
-</script>
-
-<% else %>
-
-<%
-@post_body = '{
-      "user":
-        {
-          "firstname":"Demo",
-          "lastname":"John",
-          "email":"demo@test.com",
-          "role":"normal user"
-        }
-    }'
-
-@put_body = '{
-      "user":
-        {
-          "firstname" : "Kermit"
-        }
-    }'
-%>
-
-<% @endpoint = '/users' %>
-
-<%
-@method = request.params['method']
-if !@method
-  @method = 'GET'
-end
-
-@id = ''
-if request.params['id']
-  @id = request.params['id']
-  # redirect the page to single display
-end
-
-@url = 'http://api.kennasecurity.com' + @endpoint + @id
-
-require 'kenna'
-require 'json'
-
-@api = Kenna::Api.new(current_user.token);
-
-if @id == nil || @id == ''
-    @data = @api.getAllUsers()
-else
-  @data = [];
-  @data.push(@api.getUserById(@id))
-end
-%>
-
-
-<% if !@data %>
-<script type="text/javascript">
-  alert('Token appears to be invalid.');
-  window.location.href="/pages/key";
-</script>
-<% else %>
-
-
-
-<div class="container">
-    <form action="/endpoints/users" method="GET">
-    <div class="row">
-      <div class="col s1">
-        <label>Method</label>
-        <select id="method_elem" class="browser-default" name="method">
-            <option value="<%= @method %>" selected><%= @method %></option>
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-        </select>  
-      </div>
-      
-      <!-- Endpoint Select -->
-      <%= render 'layouts/endpointsel' %>
-      
-      <!-- ID Select -->
-      <div id="id_elem" class="col s2">
-        <label>User ID</label>
-        <select class="browser-default" name="id">
-          <% if @id == '' %>
-            <option value="" selected>(No Id = All)</option>
-          <% else %>
-            <option value="<%= @id %>" selected><%= @id %></option>
-            <option value="">(No Id = All)</option>
-          <% end %>
-          <%  @data.each do |user| %>
-            <option value="/<%= user['id'] %>">/<%= user['id'] %> (<%= user['firstname'][0] %>. <%= user['lastname'] %>)</option>
-          <% end %>
-        </select>  
-      </div>
-      
-      <div id="post_body_elem" style="display:none;" class="col s4">
-        <label for="post_body">Post Body Json</label>
-        <div class="col s12">
-          <textarea name="post_body" cols="4" class="browser-default"><%= @post_body %></textarea>
-        </div>
-      </div>
-
-      <div id="put_body_elem" style="display:none;" class="col s4">
-        <label for="put_body">Put Body Json</label>
-        <div class="col s12">
-          <textarea name="put_body" cols="4" class="browser-default"><%= @data %></textarea>
-        </div>
-      </div>
-      
-      <div class="col s2">
-        <label>Send call to API</label>
-        <button class="btn waves-effect waves-light" type="submit" name="action">Send
-          <i class="material-icons right">send</i>
-        </button>
-      </div>
-    </div>
-    </form>
-</div>
-
-<!-- View data in table or JSON -->
-<div id="view_t_or_j" class="container">
-      <div class="row" style="margin:0;">
-        <div class="card white">
-
-          <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
-            <p style="font-size:16px; text-align:left;">
-              <button style="color:black; background-color:white" class="waves-effect waves-teal btn-flat" id="show_table">Table View</button> <button style="color:black; background-color:grey" class="waves-effect waves-teal btn-flat" id="show_json">JSON View</button>&nbsp;&nbsp;<%= @method %> > <%= @url %></p>
-          </div>
-
-          <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
-            
-            <div id="table">              
-            <table id="table_id" class="display" style="padding-top:0; margin-top:o">
-              <thead>
-                <tr>
-                  <%#  @data[0].keys.each do |k| %>
-                  <%#= k %>
-                  <%# end %>
-                  <th>ID</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Role</th>
-                  <th>Role ID</th>
-                  <th>Last Login</th>
-                </tr>
-              </thead>
-              <tbody>
-                <%  @data.each do |d| %>
-                  <tr>
-                      <td><a href="/endpoints/users?id=<%= d['id'] %>"><%= d['id'] %></a></td>
-                      <td><%= d['firstname'] %></td>
-                      <td><%= d['lastname'] %></td>
-                      <td><%= d['email'] %></td>
-                      <td><%= d['phone'] %></td>
-                      <td><%= d['role'] %></td>
-                      <td><%= d['role_id'] %></td>
-                      <td><%= d['last_sign_in_at'] %></td>
-                  </tr>
-                  </a>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-            
-            <div id="json">
-              <pre>
-                <%= JSON.pretty_generate @data %>
-                
-                <!-- this is if I want to iterate unknown data -->
-                <%#  @data.each do |dd| %>
-                  <%#  dd.keys.each do |kk| %>
-                    <%#= kk %><%#= dd[kk] %>
-                  <%# end %>
-                <%# end %>
-              </pre>
-              
-            </div>
-
-          </div>
-        </div>
-     </div>
-    </div>
-
-
-<!-- View Single Entry -->
+    <script type="text/javascript">
+      alert('You need to upload a valid Kenna API Token to see this page.');
+      window.location.href="/pages/key";
+    </script>
 <% 
-if @id != nil && @id != ''  
-  #@data = @data[0]
-%>
-<div id="view_single" class="container" style="margin-top:0;">
-      <div class="row" style="margin:0;">
-        <div class="card white">
-          
-          <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
-            <p style="font-size:16px; text-align:center;">
-            Full Record for:&nbsp;&nbsp;<strong><%= @url %></strong> 
-            </p>
+  else 
+
+    require 'kenna'
+    require 'json'
+    require 'faker'
+
+    # Endpoint specific setting ###
+    @resource = 'users'
+    ###############################
+    
+    @endpoint = '/' + @resource 
+    @base_url = 'http://api.kennasecurity.com'
+    @url = @base_url + @endpoint
+    
+    @post_body = {"user":{ "firstname": Faker::Name.first_name, "lastname": Faker::Name.last_name, "email": Faker::Internet.email, "phone": Faker::PhoneNumber.cell_phone, "role":"normal user" }}
+    @post_body = @post_body.to_json
+    
+    @put_body = {"user":{"firstname":"Adam"}}
+    @put_body = @put_body.to_json
+    
+    @method = request.params['method']
+    if !@method || @method == ''
+      @method = 'GET'
+    end
+    if request.params['id']
+      @id = request.params['id']
+      @url += @endpoint
+    end
+    
+    
+    # Try to get the data
+    @api = Kenna::Api.new(current_user.token);
+    # TODO: Bounce here if token is no good - Api instantiator should check this (or a isValid method? or @api == nil?)
+    
+    @data = [];
+    
+    # Build request & hit the endpoint
+    case @method
+    
+    when 'GET'
+      if @id == nil || @id == ''
+        @data = @api.getAllUsers()
+      else
+        @data.push(@api.getUserById(@id))
+        #@data = JSON.parse(@data.body)['users']
+      end
+      
+    when 'POST'
+      @post_body = request.params['post_body']
+      puts "**************************************************************************************************************"
+      puts @post_body
+      puts "**************************************************************************************************************"
+      @new_user = @api.post(@endpoint, @post_body)
+      @new_user = JSON.parse(@new_user)      
+      if !@new_user['body']
+        # Handle error!
+        alert = @new_user['message']
+      else
+        @id = @new_user['body']['user']['id']
+        @url += @url + '/' + @id
+        @METHOD = 'POST'
+        @data.push(@api.getUserById(@id))
+      end      
+      
+      
+      
+
+
+
+    else # if someone decides try to send some other value for method
+      @method = 'GET'
+    end
+    
+    %>
+    
+    <!- bounce, TODO: Refactor for what reason? use modal? Put in message where data goes? -->
+    <% if !@data %>
+        <script type="text/javascript">
+          alert('Token appears to be invalid.');
+          window.location.href="/pages/key";
+        </script>
+    <% else %>
+
+  
+
+    <!-- Begina Route Builder Form -->
+    <div class="container">
+      <form action="/endpoints/users" method="POST">
+        <%= token_tag %> 
+        <div class="row">
+          <div class="col s1">
+            <label>Method</label>
+            <select id="method_elem" class="browser-default" name="method">
+                <option value="<%= @method %>" selected><%= @method %></option>
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>  
           </div>
           
-          <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
-            
-            <div id="table">              
-            <table id="table_id" class="display" style="padding-top:0; margin-top:0;">
-              <thead>
-                <tr>
-                  <th style="width:175px"><strong>Key</strong></th>
-                  <th><strong>Value</strong></th>
-                </tr>
-              </thead>
-
-              <tbody>
-              
-                <%  @data.each do |dd| %>
-                  
-                  <%  dd.keys.each do |kk| %>
-                  <tr>
-                    <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><strong><%= kk %></strong></td>
-                    <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><%= dd[kk] %></td>
-                  </tr>
-                  <% end %>
-                <% end %>
-              
-              </tbody>
-              
-
-            </table>
+          <!-- Endpoint Select -->
+          <%= render 'layouts/endpointsel' %>
+          
+          <!-- ID Select -->
+          <div id="id_elem" class="col s2">
+            <label>User ID</label>
+            <select class="browser-default" name="id">
+              <% if @id == '' || @id == nil %>
+                <option value="" selected>(No Id = All)</option>
+              <% else %>
+                <option value="<%= @id %>" selected><%= @id %></option>
+                <option value="">(No Id = All)</option>
+              <% end %>
+              <%  @data.each do |user| %>
+                <option value="/<%= user['id'] %>">/<%= user['id'] %> (<%= user['firstname'][0] %>. <%= user['lastname'] %>)</option>
+              <% end %>
+            </select>  
+          </div>
+          
+          <div id="post_body_elem" style="display:none;" class="col s4">
+            <label for="post_body">Post Body</label>
+            <div class="col s12">
+              <textarea name="post_body" cols="4" class="browser-default"><%= @post_body %></textarea>
+            </div>
+          </div>
+    
+          <div id="put_body_elem" style="display:none;" class="col s4">
+            <label for="put_body">Put Body</label>
+            <div class="col s12">
+              <textarea name="put_body" cols="4" class="browser-default"><%= @put_body %></textarea>
+            </div>
+          </div>
+          
+          <div class="col s2">
+            <label>Send call to API</label>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Send
+              <i class="material-icons right">send</i>
+            </button>
           </div>
         </div>
-      </div>
+        </form>
+    </div>    
+    
+    <!-- View data in table or JSON -->
+    <div id="view_t_or_j" class="container">
+          <div class="row" style="margin:0;">
+            <div class="card white">
+    
+              <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
+                <p style="font-size:16px; text-align:left;">
+                  <button style="color:black; background-color:white" class="waves-effect waves-teal btn-flat" id="show_table">Table View</button> <button style="color:black; background-color:grey" class="waves-effect waves-teal btn-flat" id="show_json">JSON View</button>&nbsp;&nbsp;<%= @method %> > <%= @url %></p>
+              </div>
+    
+              <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
+                
+                <div id="table">              
+                <table id="table_id" class="display" style="padding-top:0; margin-top:o">
+                  <thead>
+                    <tr>
+                      <%#  @data[0].keys.each do |k| %>
+                      <%#= k %>
+                      <%# end %>
+                      <th>ID</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Role</th>
+                      <th>Last Login</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%  @data.each do |d| %>
+                      <tr>
+                          <td><a href="/endpoints/users?id=<%= d['id'] %>"><%= d['id'] %></a></td>
+                          <td><%= d['firstname'] %></td>
+                          <td><%= d['lastname'] %></td>
+                          <td><%= d['email'] %></td>
+                          <td><%= d['phone'] %></td>
+                          <td><%= d['role'] %></td>
+                          <td><%= d['last_sign_in_at'] %></td>
+                      </tr>
+                      </a>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+                
+                <div id="json">
+                  <pre>
+                    <%= JSON.pretty_generate @data %>
+                    
+                    <!-- this is if I want to iterate unknown data -->
+                    <%#  @data.each do |dd| %>
+                      <%#  dd.keys.each do |kk| %>
+                        <%#= kk %><%#= dd[kk] %>
+                      <%# end %>
+                    <%# end %>
+                  </pre>
+                  
+                </div>
+    
+              </div>
+            </div>
+         </div>
+        </div>
+    
+    
+    <!-- View Single Entry -->
+    <% 
+    # @id always refers to the base entitity id (endpoint ID)
+    if @id != nil && @id != ''  
+      #@data = @data[0]
+    %>
+    <div id="view_single" class="container" style="margin-top:0;">
+          <div class="row" style="margin:0;">
+            <div class="card white">
+              
+              <div class="card-title" style="margin-bottom:0; padding:6;color:white; background-color:#34495e;">
+                <p style="font-size:16px; text-align:center;">
+                Full Record for:&nbsp;&nbsp;<strong><%= @url %></strong> 
+                </p>
+              </div>
+              
+              <div class="card-content black-text" style="height:100%; padding-top:0; margin-top:o;  margin-bottom:6px;">
+                
+                <div id="table">              
+                <table id="table_id" class="display" style="padding-top:0; margin-top:0;">
+                  <thead>
+                    <tr>
+                      <th style="width:175px"><strong>Key</strong></th>
+                      <th><strong>Value</strong></th>
+                    </tr>
+                  </thead>
+    
+                  <tbody>
+                  
+                    <%  @data.each do |dd| %>
+                      
+                      <%  dd.keys.each do |kk| %>
+                      <tr>
+                        <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><strong><%= kk %></strong></td>
+                        <td style="border-style: solid; border-width: thin; border-color:#e3e3e3;"><%= dd[kk] %></td>
+                      </tr>
+                      <% end %>
+                    <% end %>
+                  
+                  </tbody>
+                  
+    
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
-</div>
-<% end %>
-
-
+    <% end %>
+    
+    
   <% end  %>
 <% end  %>
